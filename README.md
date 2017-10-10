@@ -1,158 +1,210 @@
 [![Build Status](https://travis-ci.org/n0k8t/lab05.svg?branch=master)](https://travis-ci.org/n0k8t/lab05)
-## Laboratory work IV
+## Laboratory work V
 
-Данная лабораторная работа посвещена изучению систем автоматизации сборки проекта на примере **CMake**
+Данная лабораторная работа посвещена изучению систем непрерывной интеграции на примере сервиса **Travis CI**
 
 ```ShellSession
-$ open https://cmake.org/
+$ open https://travis-ci.org
 ```
 
 ## Tasks
 
-- [X] 1. Создать публичный репозиторий с названием **lab04** на сервисе **GitHub**
-- [X] 2. Ознакомиться со ссылками учебного материала
-- [X] 3. Выполнить инструкцию учебного материала
-- [X] 4. Составить отчет и отправить ссылку личным сообщением в **Slack**
+- [x] 1. Авторизоваться на сервисе **Travis CI** с использованием **GitHub** аккаунта
+- [x] 2. Создать публичный репозиторий с названием **lab05** на сервисе **GitHub**
+- [x] 3. Ознакомиться со ссылками учебного материала
+- [x] 4. Включить интеграцию сервиса **Travis CI** с созданным репозиторием
+- [x] 5. Получить токен для **Travis CLI** с правами **repo** и **user**
+- [x] 6. Получить фрагмент вставки значка сервиса **Travis CI** в формате **Markdown**
+- [x] 7. Установить [**Travis CLI**](https://github.com/travis-ci/travis.rb#installation)
+- [x] 8. Выполнить инструкцию учебного материала
+- [x] 9. Составить отчет и отправить ссылку личным сообщением в **Slack**
 
 ## Tutorial
-Устанавливаем значение переменной окружения GITHUB_USERNAME 
+Переменные окружения
 ```ShellSession
-$ export GITHUB_USERNAME=n0k8t
+$ export GITHUB_USERNAME=<имя_пользователя>
+$ export GITHUB_TOKEN=<полученный_токен>
 ```
-Клонируем файлы из репозитория, и изменяем origin на lab04 
+Копирование репозитория лабораторной работы №4
 ```ShellSession
-$ git clone https://github.com/${GITHUB_USERNAME}/lab03.git lab04
-$ cd lab04
+$ git clone https://github.com/${GITHUB_USERNAME}/lab04 lab05
+$ cd lab05
 $ git remote remove origin
-$ git remote add origin https://github.com/${GITHUB_USERNAME}/lab04.git
+$ git remote add origin https://github.com/${GITHUB_USERNAME}/lab05
 ```
-Компиляция файлов и создание статической библиотеки
+Запись в файл для Travis CI
 ```ShellSession
-$ g++ -I./include -std=c++11 -c sources/print.cpp #компилируем файл print.cpp
-$ ls print.o #проверяем создался ли объектный файл 
-$ ar rvs print.a print.o #архивируем объктный файл и создаем статическую библиотеку
-$ file print.a # получаем информацию об этом файле
-$ g++ -I./include -std=c++11 -c examples/example1.cpp #компилируем файл example1.cpp
-$ ls example1.o # проверяем создался ли объектный файл
-$ g++ example1.o print.a -o example1 #собираем с учетом библиотеки print.a
-$ ./example1 && echo #запускаем и выводим содержимое
-```
-Аналогично 
-```ShellSession
-$ g++ -I./include -std=c++11 -c examples/example2.cpp
-$ ls example2.o
-$ g++ example2.o print.a -o example2
-$ ./example2
-$ cat log.txt && echo
-```
-Удаление объектных и статических файлов
-```ShellSession
-$ rm -rf example1.o example2.o print.o 
-$ rm -rf print.a 
-$ rm -rf example1 example2
-$ rm -rf log.txt
-```
-Создаем СMakeList, указываем минимальную версию с которой можно работать и название проекта
-```ShellSession
-$ cat > CMakeLists.txt <<EOF
-cmake_minimum_required(VERSION 3.0)
-project(print)
+$ cat > .travis.yml <<EOF
+language: cpp
 EOF
 ```
-Указываем какой стандарт используем и запрещаем менять его 
-```ShellSession
-$ cat >> CMakeLists.txt <<EOF
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-EOF
-```
-Добаввляем библиотеку
-```ShellSession
-$ cat >> CMakeLists.txt <<EOF
-add_library(print STATIC \${CMAKE_CURRENT_SOURCE_DIR}/sources/print.cpp)
-EOF
-```
-указываем где искать заголовочные файлы
-```ShellSession
-$ cat >> CMakeLists.txt <<EOF
-include_directories(\${CMAKE_CURRENT_SOURCE_DIR}/include)
-EOF
-```
-Запускаем сборку
-```ShellSession
-$ cmake -H. -B_build
-$ cmake --build _build
-```
-Добавляем ссылку на исполняемые файлы
-```ShellSession
-$ cat >> CMakeLists.txt <<EOF
 
-add_executable(example1 \${CMAKE_CURRENT_SOURCE_DIR}/examples/example1.cpp)
-add_executable(example2 \${CMAKE_CURRENT_SOURCE_DIR}/examples/example2.cpp)
+```ShellSession
+$ cat >> .travis.yml <<EOF
+
+script:
+- cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install
+- cmake --build _build
+- cmake --build _build --target install
 EOF
 ```
-Линкуем библиотеки
-```ShellSession
-$ cat >> CMakeLists.txt <<EOF
 
-target_link_libraries(example1 print)
-target_link_libraries(example2 print)
+```ShellSession
+$ cat >> .travis.yml <<EOF
+
+addons:
+  apt:
+    sources:
+      - george-edison55-precise-backports
+    packages:
+      - cmake
+      - cmake-data
 EOF
 ```
-Компилируем проекты
+Авторизация с помощью токена
 ```ShellSession
-$ cmake --build _build
-$ cmake --build _build --target print
-$ cmake --build _build --target example1
-$ cmake --build _build --target example2
+$ travis login --github-token ${GITHUB_TOKEN}
 ```
-Проверяем скомпелированные проекты
+Проверка .travis.yml
 ```ShellSession
-$ ls -la _build/libprint.a
-$ _build/example1 && echo
-hello
-$ _build/example2
-$ cat log.txt && echo
-hello
+$ travis lint
 ```
-Копирование файла со стороннего репозитория
+Вставка в текст
 ```ShellSession
-$ git clone https://github.com/tp-labs/lab04 tmp
-$ mv -f tmp/CMakeLists.txt .
-$ rm -rf tmp
+$ ex -sc '1i|<фрагмент_вставки_значка>' -cx README.md
 ```
-Подготовка рабочего пространства
+Коммиты
 ```ShellSession
-$ cat CMakeLists.txt
-$ cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install #Подготавливаем пространство для компиляции
-$ cmake --build _build --target install
-$ tree _install #Выводим информацию о системы в виде дерева
-```
-Вывод из стандартного потока для команды tree _install
-```
-_install
-├── cmake
-│   ├── print-config-noconfig.cmake
-│   └── print-config.cmake
-├── include
-│   └── print.hpp
-└── lib
-    └── libprint.a
-
-3 directories, 4 files
-```
-Пушим изменения
-```ShellSession
-$ git add CMakeLists.txt
-$ git commit -m"added CMakeLists.txt"
+$ git add .travis.yml
+$ git add README.md
+$ git commit -m"added CI"
 $ git push origin master
+```
+Команды travis
+```ShellSession
+$ travis lint     
+Warnings for .travis.yml:
+[x] value for addons section is empty, dropping
+[x] in addons section: unexpected key apt, dropping
+$ travis accounts     #показывает аккаунты и их статусы
+n0k8t (Timofey Tyrin): subscribed, 33 repositories
+$ travis sync         #синхронизация
+synchronizing: ... done
+$ travis repos	      #показывает репозитории и их активность
+n0k8t/3rd-SEM-lab1 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/3rd-SEM-lab2 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/3rd-semester (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/HW_1 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Lab2_Var10 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Lab3_Var12 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Lab3_Var9 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Lab4_Var11 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Lab5_Var11 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Lab6_Zoo (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Lab7_Part1 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Lab7_Part2 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Lab7d (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Modul2_Add1 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Modul2_Lab1 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Modul2_Lab10 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Modul2_Lab3 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Modul2_Lab4 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Modul2_Lab5 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Modul2_Lab6 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Modul2_Lab7 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Modul2_Lab8 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Modul2_Lab9 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/Modul2_lab2 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/boolean_function (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/functional (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/lab03 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/lab04 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/lab05 (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/lab1_TString (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/qsort (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/thread (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+
+n0k8t/tmp (active: no, admin: yes, push: yes, pull: yes)
+Description: ???
+$ travis enable       #активация проекта
+Detected repository as n0k8t/lab05, is this correct? |yes| 
+n0k8t/lab05: enabled :)
+$ travis whatsup      #показывает последний действия с файлами
+nothing to show
+$ travis branches     #показывает ветки
+$ travis history      #история
+$ travis show         #показывает общую информацию о недавних сборках
+no build yet for n0k8t/lab05
 ```
 
 ## Report
 
 ```ShellSession
 $ cd ~/workspace/labs/
-$ export LAB_NUMBER=04
+$ export LAB_NUMBER=05
 $ git clone https://github.com/tp-labs/lab${LAB_NUMBER} tasks/lab${LAB_NUMBER}
 $ mkdir reports/lab${LAB_NUMBER}
 $ cp tasks/lab${LAB_NUMBER}/README.md reports/lab${LAB_NUMBER}/REPORT.md
@@ -163,8 +215,9 @@ $ gistup -m "lab${LAB_NUMBER}"
 
 ## Links
 
-- [Autotools](http://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html)
-- [CMake](https://cgold.readthedocs.io/en/latest/index.html)
+- [Travis Client](https://github.com/travis-ci/travis.rb)
+- [AppVeyour](https://www.appveyor.com/)
+- [GitLab CI](https://about.gitlab.com/gitlab-ci/)
 
 ```
 Copyright (c) 2017 Братья Вершинины
