@@ -130,4 +130,3 @@ $ gistup -m "lab${LAB_NUMBER}"
 ```
 Copyright (c) 2017 Братья Вершинины
 ```
-```
