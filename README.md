@@ -29,9 +29,9 @@ $ git remote add origin https://github.com/${GITHUB_USERNAME}/lab06
 Создаем тесты
 ```ShellSession
 $ mkdir tests
-$ wget https://github.com/philsquared/Catch/releases/download/v1.9.3/catch.hpp -O tests/catch.hpp
-$ cat > tests/main.cpp <<EOF
-#define CATCH_CONFIG_MAIN
+$ wget https://github.com/philsquared/Catch/releases/download/v1.9.3/catch.hpp -O tests/catch.hpp # скачивание "catch.hpp" в директроию /tests. 
+$ cat > tests/main.cpp <<EOF	
+#define CATCH_CONFIG_MAIN	#При rомпиляции эта структура преобразуется в функцию main
 #include "catch.hpp"
 EOF
 ```
@@ -40,20 +40,23 @@ EOF
 $ sed -i '' '/option(BUILD_EXAMPLES "Build examples" OFF)/a\
 option(BUILD_TESTS "Build tests" OFF)
 ' CMakeLists.txt
-$ cat >> CMakeLists.txt <<EOF
+$ cat >> CMakeLists.txt <<EOF  # добавление в CMakeLists.txt информации и конфигурации тестов
 
 if(BUILD_TESTS)
 	enable_testing()
 	file(GLOB \${PROJECT_NAME}_TEST_SOURCES tests/*.cpp)
 	add_executable(check \${\${PROJECT_NAME}_TEST_SOURCES})
 	target_link_libraries(check \${PROJECT_NAME} \${DEPENDS_LIBRARIES})
-	add_test(NAME check COMMAND check "-s" "-r" "compact" "--use-colour" "yes") 
+	add_test(NAME check COMMAND check "-s" "-r" "compact" "--use-colour" "yes")	#задаем параметры теста 
+											# -s = показываем успешные выполнения теста
+											# -r compact = формат вывода
+											
 endif()
 EOF
 ```
 
 ```ShellSession
-$ cat >> tests/test1.cpp <<EOF
+$ cat >> tests/test1.cpp <<EOF # создание файла ресурса с написанными тестами
 #include "catch.hpp"
 #include <print.hpp>
 
@@ -72,13 +75,13 @@ TEST_CASE("output values should match input values", "[file]") {
 }
 EOF
 ```
-Компилируем проекты
+
 ```ShellSession
 $ cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install -DBUILD_TESTS=ON
 $ cmake --build _build
 $ cmake --build _build --target test
 ```
-
+ Формирование набора операций для редактирования
 ```ShellSession
 $ sed -i '' 's/lab05/lab06/g' README.md
 $ sed -i '' 's/\(DCMAKE_INSTALL_PREFIX=_install\)/\1 -DBUILD_TESTS=ON/' .travis.yml
@@ -105,7 +108,7 @@ $ travis enable
 ```ShellSession
 $ mkdir artifacts
 $ screencapture -T 20 artifacts/screenshot.jpg
-<Command>-T	#новая
+<Command>-T	
 $ open https://github.com/${GITHUB_USERNAME}/lab06
 ```
 
