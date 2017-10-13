@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/n0k8t/lab05.svg?branch=master)](https://travis-ci.org/n0k8t/lab05)
+[![Build Status](https://travis-ci.org/n0k8t/lab06.svg?branch=master)](https://travis-ci.org/n0k8t/lab06)
 ## Laboratory work V
 
 Данная лабораторная работа посвещена изучению систем непрерывной интеграции на примере сервиса **Travis CI**
@@ -10,7 +10,7 @@ $ open https://travis-ci.org
 ## Tasks
 
 - [x] 1. Авторизоваться на сервисе **Travis CI** с использованием **GitHub** аккаунта
-- [x] 2. Создать публичный репозиторий с названием **lab05** на сервисе **GitHub**
+- [x] 2. Создать публичный репозиторий с названием **lab06** на сервисе **GitHub**
 - [x] 3. Ознакомиться со ссылками учебного материала
 - [x] 4. Включить интеграцию сервиса **Travis CI** с созданным репозиторием
 - [x] 5. Получить токен для **Travis CLI** с правами **repo** и **user**
@@ -27,10 +27,10 @@ $ export GITHUB_TOKEN=<полученный_токен>
 ```
 Копирование репозитория лабораторной работы №4
 ```ShellSession
-$ git clone https://github.com/${GITHUB_USERNAME}/lab04 lab05
-$ cd lab05
+$ git clone https://github.com/${GITHUB_USERNAME}/lab04 lab06
+$ cd lab06
 $ git remote remove origin
-$ git remote add origin https://github.com/${GITHUB_USERNAME}/lab05
+$ git remote add origin https://github.com/${GITHUB_USERNAME}/lab06
 ```
 Запись в файл для Travis CI
 ```ShellSession
@@ -175,7 +175,7 @@ Description: ???
 n0k8t/lab04 (active: no, admin: yes, push: yes, pull: yes)
 Description: ???
 
-n0k8t/lab05 (active: no, admin: yes, push: yes, pull: yes)
+n0k8t/lab06 (active: no, admin: yes, push: yes, pull: yes)
 Description: ???
 
 n0k8t/lab1_TString (active: no, admin: yes, push: yes, pull: yes)
@@ -190,14 +190,14 @@ Description: ???
 n0k8t/tmp (active: no, admin: yes, push: yes, pull: yes)
 Description: ???
 $ travis enable       #активация проекта
-Detected repository as n0k8t/lab05, is this correct? |yes| 
-n0k8t/lab05: enabled :)
+Detected repository as n0k8t/lab06, is this correct? |yes| 
+n0k8t/lab06: enabled :)
 $ travis whatsup      #показывает последний действия с файлами
 nothing to show
 $ travis branches     #показывает ветки
 $ travis history      #история
 $ travis show         #показывает общую информацию о недавних сборках
-no build yet for n0k8t/lab05
+no build yet for n0k8t/lab06
 ```
 
 ## Report
