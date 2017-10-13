@@ -101,7 +101,7 @@ $ git push origin master
 $ travis login --auto
 $ travis enable
 ```
-Создаем паку artifacts и добавляем туда скриншот
+Создаем папку artifacts и добавляем туда скриншот
 ```ShellSession
 $ mkdir artifacts
 $ screencapture -T 20 artifacts/screenshot.jpg
