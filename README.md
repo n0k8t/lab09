@@ -75,11 +75,11 @@ TEST_CASE("output values should match input values", "[file]") {
 }
 EOF
 ```
-
+Сборка проэкта
 ```ShellSession
 $ cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install -DBUILD_TESTS=ON
 $ cmake --build _build
-$ cmake --build _build --target test
+$ cmake --build _build --target test  # если test задан, он будет запущен после сборки
 ```
  Формирование набора операций для редактирования
 ```ShellSession
