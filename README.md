@@ -15,18 +15,18 @@ $ open https://github.com/philsquared/Catch
 - [X] 4. Составить отчет и отправить ссылку личным сообщением в **Slack**
 
 ## Tutorial
-
+Задаем переменную окружения
 ```ShellSession
-$ export GITHUB_USERNAME=<имя_пользователя>
+$ export GITHUB_USERNAME=n0k8t
 ```
-
+Клонируем репозиторий
 ```ShellSession
 $ git clone https://github.com/${GITHUB_USERNAME}/lab05 lab06
 $ cd lab06
 $ git remote remove origin
 $ git remote add origin https://github.com/${GITHUB_USERNAME}/lab06
 ```
-
+Создаем тесты
 ```ShellSession
 $ mkdir tests
 $ wget https://github.com/philsquared/Catch/releases/download/v1.9.3/catch.hpp -O tests/catch.hpp
@@ -72,7 +72,7 @@ TEST_CASE("output values should match input values", "[file]") {
 }
 EOF
 ```
-
+Компилируем проекты
 ```ShellSession
 $ cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install -DBUILD_TESTS=ON
 $ cmake --build _build
@@ -90,22 +90,22 @@ $ sed -i '' '/cmake --build _build --target install/a\
 ```ShellSession
 $ travis lint
 ```
-
+Пушим изменения
 ```ShellSession
 $ git add .
 $ git commit -m"added tests"
 $ git push origin master
 ```
-
+Входим в тревис и подключаем его к lab06
 ```ShellSession
 $ travis login --auto
 $ travis enable
 ```
-
+Создаем паку artifacts и добавляем туда скриншот
 ```ShellSession
 $ mkdir artifacts
 $ screencapture -T 20 artifacts/screenshot.jpg
-<Command>-T
+<Command>-T	#новая
 $ open https://github.com/${GITHUB_USERNAME}/lab06
 ```
 
