@@ -31,7 +31,7 @@ $ git remote add origin https://github.com/${GITHUB_USERNAME}/lab06
 $ mkdir tests
 $ wget https://github.com/philsquared/Catch/releases/download/v1.9.3/catch.hpp -O tests/catch.hpp # скачивание "catch.hpp" в директроию /tests. 
 $ cat > tests/main.cpp <<EOF	
-#define CATCH_CONFIG_MAIN	#При rомпиляции эта структура преобразуется в функцию main
+#define CATCH_CONFIG_MAIN	#При компиляции эта структура преобразуется в функцию main
 #include "catch.hpp"
 EOF
 ```
