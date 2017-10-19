@@ -74,7 +74,6 @@ $ git push origin gh-pages
 $ git checkout master                 # возврат к ветке master
 ```
 Создаем папку artifacts и добавляем туда скриншот. Затем выгружаем в драйв и даем допуск для "rusdevops@gmail.com" 
-
 ```ShellSession
 $ mkdir artifacts && cd artifacts
 $ screencapture -T 10 screenshot.jpg # или png
