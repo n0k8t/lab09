@@ -26,7 +26,7 @@ $ alias gsed=sed # for *-nix system # Настраиваем потоковый 
 
 Скачиваем предыдущую лабораторную работу №8 в папку `lab09`.
 ```ShellSession
-$ git clone https://github.com/${GITHUB_USERNAME}/lab08 lab09 # Скачиваем гит
+$ git clone https://github.com/${GITHUB_USERNAME}/lab08 lab09 
 $ cd lab09 # Переходим в папку lab09
 $ git remote remove origin # Очищаем старый путь загрузки гита
 $ git remote add origin https://github.com/${GITHUB_USERNAME}/lab09 # Назначаем новый путь загрузки гита
